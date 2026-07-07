@@ -1,0 +1,9 @@
+{
+  "name": "fifa2026-smartstadium",
+  "version": "1.0.0",
+  "description": "FIFA World Cup 2026 SmartStadium Operations & Fan Concierge Portal",
+  "main": "app.js",
+  "scripts": {
+    "start": "npx http-server -p 8080"
+  }
+}

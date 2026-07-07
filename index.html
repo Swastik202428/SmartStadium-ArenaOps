@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIFA World Cup 2026 - SmartStadium Operations & Fan Concierge</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="fifa-badge">FIFA 2026</span>
+        <h1 class="app-title">SmartStadium <span class="accent-text">ArenaOps</span></h1>
+      </div>
+      
+      <!-- Tab Control Switches -->
+      <div class="tab-controls">
+        <button id="btn-fan-view" class="tab-btn active" onclick="switchView('fan')">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Fan Experience Portal
+        </button>
+        <button id="btn-ops-view" class="tab-btn" onclick="switchView('ops')">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+            <line x1="9" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="15" x2="21" y2="15"></line>
+          </svg>
+          Operations Command Center
+        </button>
+      </div>
+
+      <!-- Quick Settings / API Status Indicator -->
+      <div class="header-actions">
+        <div class="api-indicator offline" id="api-status-tag" onclick="toggleApiModal()">
+          <span class="status-dot"></span>
+          <span class="status-label">Mock Gemini Eng.</span>
+        </div>
+        <button class="settings-btn" onclick="toggleApiModal()" title="Gemini API Configuration">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Screens -->
+    <main class="app-main">
+      
+      <!-- SCREEN 1: FAN EXPERIENCE PORTAL -->
+      <section id="fan-screen" class="view-screen active">
+        <div class="fan-grid">
+          
+          <!-- Column 1: AI Concierge & Chat Assistant -->
+          <div class="card glass-card chat-card">
+            <div class="card-header">
+              <div class="header-left">
+                <span class="live-pulse"></span>
+                <h3>World Cup Fan Concierge</h3>
+              </div>
+              <div class="language-selector">
+                <select id="fan-lang" onchange="changeLanguage()">
+                  <option value="en">🇺🇸 EN</option>
+                  <option value="es">🇪🇸 ES</option>
+                  <option value="fr">🇫🇷 FR</option>
+                  <option value="ar">🇸🇦 AR</option>
+                  <option value="pt">🇧🇷 PT</option>
+                  <option value="ja">🇯🇵 JP</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Chat logs -->
+            <div class="chat-messages" id="chat-messages">
+              <div class="message assistant">
+                <div class="avatar">🤖</div>
+                <div class="message-content">
+                  <p id="welcome-msg">Welcome to the FIFA World Cup 2026 Stadium Concierge! 🏆 I can help you with wayfinding, accessibility, transit options, concessions, and real-time alerts. Ask me anything in your preferred language.</p>
+                  <div class="chat-chips">
+                    <button class="chip" onclick="quickQuery('restroom')">♿ Wheelchair Restrooms</button>
+                    <button class="chip" onclick="quickQuery('parking')">🚗 Shuttle Parking</button>
+                    <button class="chip" onclick="quickQuery('sustainability')">🌱 EcoPass Rewards</button>
+                    <button class="chip" onclick="quickQuery('gate')">🏟️ Which gate is open?</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Chat Input form -->
+            <form class="chat-input-area" id="chat-form" onsubmit="handleChatSubmit(event)">
+              <input type="text" id="chat-input" placeholder="Type your question about MetLife Stadium..." required autocomplete="off">
+              <button type="submit" class="send-btn">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <!-- Column 2: Interactive Wayfinding Map -->
+          <div class="card glass-card map-card">
+            <div class="card-header">
+              <div class="header-left">
+                <svg class="icon text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                  <line x1="9" y1="3" x2="9" y2="18"></line>
+                  <line x1="15" y1="6" x2="15" y2="21"></line>
+                </svg>
+                <h3>Interactive Stadium Wayfinding</h3>
+              </div>
+              <div class="map-controls">
+                <button class="map-mode-btn active" id="map-mode-normal" onclick="setMapLayer('normal')">Overview</button>
+                <button class="map-mode-btn" id="map-mode-access" onclick="setMapLayer('access')">♿ Accessibility</button>
+                <button class="map-mode-btn" id="map-mode-crowd" onclick="setMapLayer('crowd')">🔥 Queue Heatmap</button>
+              </div>
+            </div>
+            
+            <div class="map-view-wrapper">
+              <!-- Stadium Interactive SVG Map -->
+              <svg id="stadium-svg" class="stadium-map" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                <!-- Definitions for Gradients/Filters -->
+                <defs>
+                  <radialGradient id="pitch-grad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#16a34a" />
+                    <stop offset="100%" stop-color="#14532d" />
+                  </radialGradient>
+                  <filter id="glow-effect" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="8" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+                </defs>
+
+                <!-- Background Grid -->
+                <rect width="800" height="600" fill="none" />
+                <circle cx="400" cy="300" r="280" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2" />
+                <circle cx="400" cy="300" r="220" fill="none" stroke="rgba(255,255,255,0.05)" stroke-dasharray="8 6" stroke-width="1" />
+
+                <!-- Transit & Parking Zones (Outer Area) -->
+                <!-- Parking North -->
+                <g class="map-zone transit-zone" id="zone-parking-n" onclick="selectMapItem('Parking North', 'North Lot: Rapid Express Shuttles. Level pathways to Gates A & B.')">
+                  <path d="M 300 20 L 500 20 L 460 70 L 340 70 Z" fill="rgba(59, 130, 246, 0.15)" stroke="#3b82f6" stroke-width="1.5" />
+                  <text x="400" y="45" class="map-label">PARKING NORTH (SHUTTLES)</text>
+                </g>
+
+                <!-- Train Station East -->
+                <g class="map-zone transit-zone" id="zone-train-e" onclick="selectMapItem('NJ Transit Station', 'MetLife Station: NJ Transit Trains. Accessible high-level boarding platforms. Wheelchair ramp directly leads to Gate C.')">
+                  <path d="M 730 200 L 780 200 L 780 400 L 730 400 Z" fill="rgba(59, 130, 246, 0.15)" stroke="#3b82f6" stroke-width="1.5" />
+                  <text x="755" y="300" class="map-label vertical-text">METLIFE STATION (TRAINS)</text>
+                </g>
+
+                <!-- Rideshare South -->
+                <g class="map-zone transit-zone" id="zone-rideshare-s" onclick="selectMapItem('Rideshare South Lot', 'South Lot: Uber/Lyft pickup zone. Access via Gate D paths.')">
+                  <path d="M 300 580 L 500 580 L 460 530 L 340 530 Z" fill="rgba(59, 130, 246, 0.15)" stroke="#3b82f6" stroke-width="1.5" />
+                  <text x="400" y="560" class="map-label">RIDESHARE / TAXI SOUTH</text>
+                </g>
+
+                <!-- Accessible Drop-off West -->
+                <g class="map-zone transit-zone" id="zone-ada-w" onclick="selectMapItem('ADA Drop-off West', 'ADA Designated Drop-off: Smooth, step-free access straight into Gate A security lanes.')">
+                  <path d="M 20 200 L 70 200 L 70 400 L 20 400 Z" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="1.5" />
+                  <text x="45" y="300" class="map-label vertical-text">ADA ACCESSIBLE DROP-OFF</text>
+                </g>
+
+                <!-- Connection Pathways (Normal View: hidden or light grey, Access View: Highlighted) -->
+                <g id="map-pathways">
+                  <!-- ADA path from West Drop-off to Gate A -->
+                  <path id="path-ada-gate-a" d="M 70 300 H 220" fill="none" stroke="rgba(16, 185, 129, 0.3)" stroke-width="4" stroke-dasharray="6 4" />
+                  <!-- Train Station path to Gate C -->
+                  <path id="path-train-gate-c" d="M 730 300 H 580" fill="none" stroke="rgba(59, 130, 246, 0.3)" stroke-width="4" stroke-dasharray="6 4" />
+                  <!-- Shuttle path to Gate B -->
+                  <path id="path-shuttle-gate-b" d="M 400 70 V 160" fill="none" stroke="rgba(59, 130, 246, 0.3)" stroke-width="4" stroke-dasharray="6 4" />
+                  <!-- Navigation overlay pathways (rendered dynamically in JS) -->
+                  <path id="dynamic-nav-path" d="" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round" filter="url(#glow-effect)" class="hidden" />
+                </g>
+
+                <!-- Stadium Outer Security Ring -->
+                <circle cx="400" cy="300" r="180" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3" />
+
+                <!-- Gate Structures (Clickable Interactive Gates) -->
+                <!-- Gate A (West) -->
+                <g class="map-gate" id="gate-a" onclick="selectMapItem('Gate A (West)', 'Gate A: Fully open. Features 4 dedicated ADA entry screening lanes. Elevator bank directly inside leads to Suite & 200/300 levels.')">
+                  <circle cx="220" cy="300" r="22" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+                  <text x="220" y="304" class="gate-text">A</text>
+                  <!-- Congestion heat dot -->
+                  <circle cx="235" cy="285" r="7" class="congestion-indicator status-green" id="gate-a-status" />
+                </g>
+                <!-- Gate B (North) -->
+                <g class="map-gate" id="gate-b" onclick="selectMapItem('Gate B (North)', 'Gate B: Moderate flow. 12 minutes wait. Connects to North Lot shuttles.')">
+                  <circle cx="400" cy="160" r="22" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+                  <text x="400" y="164" class="gate-text">B</text>
+                  <circle cx="415" cy="145" r="7" class="congestion-indicator status-orange" id="gate-b-status" />
+                </g>
+                <!-- Gate C (East) -->
+                <g class="map-gate" id="gate-c" onclick="selectMapItem('Gate C (East)', 'Gate C: Extremely busy. 25 minutes wait. Connects directly to NJ Transit station platforms.')">
+                  <circle cx="580" cy="300" r="22" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+                  <text x="580" y="304" class="gate-text">C</text>
+                  <circle cx="595" cy="285" r="7" class="congestion-indicator status-red" id="gate-c-status" />
+                </g>
+                <!-- Gate D (South) -->
+                <g class="map-gate" id="gate-d" onclick="selectMapItem('Gate D (South)', 'Gate D: Normal flow. 8 minutes wait. Near Rideshare lot.')">
+                  <circle cx="400" cy="440" r="22" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+                  <text x="400" y="444" class="gate-text">D</text>
+                  <circle cx="415" cy="425" r="7" class="congestion-indicator status-green" id="gate-d-status" />
+                </g>
+
+                <!-- Inner Stadium Outer Seating Ring -->
+                <path d="M 330 180 A 130 130 0 0 1 470 180 A 130 130 0 0 1 470 420 A 130 130 0 0 1 330 420 A 130 130 0 0 1 330 180 Z" fill="rgba(30, 41, 59, 0.85)" stroke="rgba(255,255,255,0.15)" stroke-width="2" />
+
+                <!-- Seating Sectors (Interactive Quadrants) -->
+                <!-- Sector 100 - West (Near Gate A) -->
+                <path class="map-sector" id="sector-100" d="M 330 200 A 110 110 0 0 0 290 300 A 110 110 0 0 0 330 400 L 330 360 A 70 70 0 0 1 310 300 A 70 70 0 0 1 330 240 Z" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1" onclick="selectMapItem('Section 100-120 (West)', 'Direct access via Gate A. Accessible seating stands: Row A in Sections 101, 102, and 120. Elevators available behind section entry tunnels.')" />
+                <text x="280" y="305" class="map-label sector-lbl">SEC 100</text>
+
+                <!-- Sector 200 - North (Near Gate B) -->
+                <path class="map-sector" id="sector-200" d="M 340 190 A 110 110 0 0 1 460 190 L 440 230 A 70 70 0 0 0 360 230 Z" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1" onclick="selectMapItem('Section 201-218 (North End)', 'Direct access via Gate B. Concessions nearby: Vegan & Gluten Free Hotdogs (Sec 205). Standard access escalators.')" />
+                <text x="400" y="210" class="map-label sector-lbl">SEC 200</text>
+
+                <!-- Sector 300 - East (Near Gate C) -->
+                <path class="map-sector" id="sector-300" d="M 470 200 A 110 110 0 0 1 510 300 A 110 110 0 0 1 470 400 L 470 360 A 70 70 0 0 0 490 300 A 70 70 0 0 0 470 240 Z" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1" onclick="selectMapItem('Section 300-320 (East)', 'Direct access via Gate C. Elevator Access: Gate C Main elevator lobby (wheelchair users priority). First Aid Station situated next to tunnel entry 302.')" />
+                <text x="520" y="305" class="map-label sector-lbl">SEC 300</text>
+
+                <!-- Sector 400 - South (Near Gate D) -->
+                <path class="map-sector" id="sector-400" d="M 340 410 A 110 110 0 0 0 460 410 L 440 370 A 70 70 0 0 1 360 370 Z" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1" onclick="selectMapItem('Section 401-418 (South End)', 'Direct access via Gate D. Main Concession Hub (Eco-Friendly waste receptacles and reusable cup return bins at Sec 406).')" />
+                <text x="400" y="395" class="map-label sector-lbl">SEC 400</text>
+
+                <!-- Central Pitch (Visual Centerpiece) -->
+                <rect x="350" y="250" width="100" height="100" rx="6" fill="url(#pitch-grad)" stroke="#ffffff" stroke-width="1.5" />
+                <line x1="400" y1="250" x2="400" y2="350" stroke="#ffffff" stroke-width="1.5" />
+                <circle cx="400" cy="300" r="16" fill="none" stroke="#ffffff" stroke-width="1.5" />
+
+                <!-- Icons overlays (only show in Access Mode via CSS toggle) -->
+                <!-- West ADA Icon -->
+                <g class="access-map-icon hidden" id="icon-ada-gatea" onclick="selectMapItem('Elevator Hub A (Access)', 'Fast elevators supporting wheelchairs and strollers to upper tiers 200/300. Staffed at all times.')">
+                  <circle cx="250" cy="300" r="10" fill="#10b981" />
+                  <text x="250" y="303" fill="#ffffff" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="bold">♿</text>
+                </g>
+                <!-- East ADA Icon -->
+                <g class="access-map-icon hidden" id="icon-ada-gatec" onclick="selectMapItem('Elevator Hub C (Access)', 'Primary elevator block. Dedicated priority lane for mobility-challenged fans.')">
+                  <circle cx="550" cy="300" r="10" fill="#10b981" />
+                  <text x="550" y="303" fill="#ffffff" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="bold">♿</text>
+                </g>
+                <!-- North First Aid Icon -->
+                <g class="access-map-icon hidden" id="icon-aid-sec200" onclick="selectMapItem('First Aid Station North', 'Full paramedic service, oxygen equipment, sensory calming zone (for neurodivergent guests) behind Sector 202.')">
+                  <circle cx="400" cy="230" r="10" fill="#ef4444" />
+                  <text x="400" y="233" fill="#ffffff" font-size="8" text-anchor="middle" font-family="sans-serif" font-weight="bold">✚</text>
+                </g>
+                <!-- Sensory Calming Room South -->
+                <g class="access-map-icon hidden" id="icon-sensory-sec400" onclick="selectMapItem('Sensory Room South', 'Quiet zone with sensory packs, noise-canceling headphones, and soft lighting for fans who feel overwhelmed. Sector 404.')">
+                  <circle cx="400" cy="370" r="10" fill="#8b5cf6" />
+                  <text x="400" y="373" fill="#ffffff" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="bold">👁️</text>
+                </g>
+              </svg>
+            </div>
+            
+            <!-- Dynamic map legend and selected details -->
+            <div class="map-meta-info" id="map-meta-panel">
+              <div id="map-detail-empty">
+                <p class="text-muted">💡 Click on any Gate, Transit Zone, Seating Section or Accessibility Pin on the map to query locations and view AI-recommended navigation directions.</p>
+              </div>
+              <div id="map-detail-content" class="hidden">
+                <h4 id="map-detail-title">Selected Facility</h4>
+                <p id="map-detail-text">Facility details here.</p>
+                <div class="routing-action-area" id="routing-actions">
+                  <!-- Generated dynamic routing buttons -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: Sustainability EcoPass Tracker -->
+          <div class="card glass-card eco-card">
+            <div class="card-header">
+              <div class="header-left">
+                <span class="leaf-badge">🌱 EcoPass</span>
+                <h3>Sustainability Tracker</h3>
+              </div>
+              <div class="eco-score-badge">
+                <span class="score-num" id="eco-points">0</span> pts
+              </div>
+            </div>
+            
+            <div class="eco-body">
+              <p class="text-sm">Scan recycling or verify your public transit ride to earn **Green Points** towards World Cup concessions and merchandise discounts!</p>
+              
+              <div class="scanner-box">
+                <div class="scanner-viewfinder" id="scanner-viewfinder">
+                  <div class="scanner-laser"></div>
+                  <!-- Upload/Simulation State -->
+                  <div class="scan-state-idle" id="scan-idle">
+                    <svg class="icon large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span>Simulate Image Capture</span>
+                  </div>
+                  
+                  <div class="scan-state-loading hidden" id="scan-loading">
+                    <div class="spinner"></div>
+                    <span class="scan-status-text">AI Analyzing Object...</span>
+                  </div>
+
+                  <div class="scan-state-result hidden" id="scan-result">
+                    <div class="result-icon success" id="scan-result-icon">✓</div>
+                    <h5 id="scan-result-title">Item Scanned</h5>
+                    <p id="scan-result-points">+50 Points</p>
+                  </div>
+                </div>
+
+                <!-- Simulation selectors -->
+                <div class="simulation-triggers">
+                  <button class="btn btn-secondary btn-sm" onclick="triggerScan('plastic')">♻️ PET Bottle</button>
+                  <button class="btn btn-secondary btn-sm" onclick="triggerScan('can')">♻️ Aluminum Can</button>
+                  <button class="btn btn-secondary btn-sm" onclick="triggerScan('transit')">🎫 Train Ticket</button>
+                </div>
+              </div>
+
+              <!-- Reward Panel -->
+              <div class="reward-panel">
+                <h4>Active Rewards Unlocked</h4>
+                <div class="rewards-list" id="rewards-list">
+                  <div class="reward-empty">
+                    <p>Collect 100 points to unlock your first discount coupon!</p>
+                    <div class="progress-bar-container">
+                      <div class="progress-bar-fill" id="eco-progress" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SCREEN 2: OPERATIONS COMMAND CENTER -->
+      <section id="ops-screen" class="view-screen">
+        
+        <!-- Top Stats Row -->
+        <div class="ops-stats-row">
+          <div class="stat-card glass-card">
+            <span class="stat-label">Total Fan Occupancy</span>
+            <div class="stat-main">
+              <span class="stat-value" id="stat-occupancy">78,412</span>
+              <span class="stat-delta positive">95% capacity</span>
+            </div>
+            <div class="stat-sub">MetLife Stadium Live Gates</div>
+          </div>
+          
+          <div class="stat-card glass-card">
+            <span class="stat-label">Active Gate Waiting Times</span>
+            <div class="stat-main">
+              <span class="stat-value" id="stat-avg-wait">12m</span>
+              <span class="stat-delta warning" id="stat-wait-delta">Gate C Busy</span>
+            </div>
+            <div class="stat-sub">Max queue: 25 mins at Gate C</div>
+          </div>
+
+          <div class="stat-card glass-card">
+            <span class="stat-label">Sustainability & Waste Diverted</span>
+            <div class="stat-main">
+              <span class="stat-value" id="stat-waste">82.4%</span>
+              <span class="stat-delta positive">Goal: 85%</span>
+            </div>
+            <div class="stat-sub">4,203 bottles recycled today</div>
+          </div>
+
+          <div class="stat-card glass-card">
+            <span class="stat-label">Public Transit Adoption</span>
+            <div class="stat-main">
+              <span class="stat-value" id="stat-transit">62.8%</span>
+              <span class="stat-delta positive">+4.2% vs baseline</span>
+            </div>
+            <div class="stat-sub">NJ Transit & Shuttle Shifting</div>
+          </div>
+        </div>
+
+        <div class="ops-grid">
+          
+          <!-- Column 1: GenAI Operational Support & Incident Playbooks -->
+          <div class="card glass-card copilot-card">
+            <div class="card-header">
+              <div class="header-left">
+                <span class="ai-badge">GenAI Copilot</span>
+                <h3>Operational Decision Support</h3>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="clearCopilot()">Clear Output</button>
+            </div>
+            
+            <div class="copilot-body">
+              <p class="text-sm">Type an active incident or select an operational scenario preset. The GenAI Engine will compile custom Standard Operating Procedures (SOPs), dynamic re-routing strategies, and draft announcements.</p>
+              
+              <!-- Presets -->
+              <div class="copilot-presets">
+                <span class="preset-label">Scenario Presets:</span>
+                <button class="preset-chip" onclick="runCopilotScenario('bottleneck')">⚠️ Gate C Crowd Bottleneck</button>
+                <button class="preset-chip" onclick="runCopilotScenario('medical')">🚨 Medical Emergency Section 104</button>
+                <button class="preset-chip" onclick="runCopilotScenario('storm')">⛈️ Extreme Weather Delays</button>
+                <button class="preset-chip" onclick="runCopilotScenario('lost')">👧 Lost Child at Gate A</button>
+              </div>
+
+              <!-- Input Area -->
+              <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
+                <textarea id="copilot-input" rows="3" placeholder="Describe the operational incident or crowd management issue (e.g., 'Gate B wait times exceed 20 mins redirect incoming shuttle buses')..."></textarea>
+                <div class="copilot-input-actions">
+                  <div class="api-toggle-info">
+                    <span class="text-xs text-muted" id="copilot-mode-lbl">Running in Offline Mode</span>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Generate Playbook & Action Plan</button>
+                </div>
+              </form>
+
+              <!-- Output Container -->
+              <div class="copilot-output-container hidden" id="copilot-output-wrapper">
+                <div class="copilot-output-header">
+                  <h4>Generated Playbook & Decision Support Plan</h4>
+                  <button class="btn btn-icon-sm" onclick="copyCopilotOutput()" title="Copy Playbook">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div class="copilot-output-content" id="copilot-output-text">
+                  <!-- Formatted output markdown styled elements will render here -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Interactive Operations Controller & Map Controller -->
+          <div class="card glass-card ops-map-card">
+            <div class="card-header">
+              <div class="header-left">
+                <svg class="icon text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="6"></circle>
+                  <circle cx="12" cy="12" r="2"></circle>
+                </svg>
+                <h3>Active Gate & Stadium Controls</h3>
+              </div>
+              <span class="text-xs text-muted">Simulate Queue & Safety status</span>
+            </div>
+            
+            <div class="ops-controls-body">
+              <p class="text-sm">Click controls below to adjust active queue times at security gates. These changes update the Fan Portal Map in real-time, guiding users dynamically to quieter entry points.</p>
+              
+              <div class="gate-controllers-grid">
+                <!-- Gate A Controller -->
+                <div class="gate-control-card">
+                  <div class="gcc-header">
+                    <strong>Gate A (West)</strong>
+                    <span class="badge status-green" id="ctrl-gate-a-status">NORMAL</span>
+                  </div>
+                  <div class="gcc-body">
+                    <label>Wait Time: <span id="val-gate-a-wait">5m</span></label>
+                    <input type="range" min="2" max="45" value="5" class="wait-slider" id="slider-gate-a" oninput="updateGateSimulation('a')">
+                  </div>
+                </div>
+                
+                <!-- Gate B Controller -->
+                <div class="gate-control-card">
+                  <div class="gcc-header">
+                    <strong>Gate B (North)</strong>
+                    <span class="badge status-orange" id="ctrl-gate-b-status">MODERATE</span>
+                  </div>
+                  <div class="gcc-body">
+                    <label>Wait Time: <span id="val-gate-b-wait">12m</span></label>
+                    <input type="range" min="2" max="45" value="12" class="wait-slider" id="slider-gate-b" oninput="updateGateSimulation('b')">
+                  </div>
+                </div>
+
+                <!-- Gate C Controller -->
+                <div class="gate-control-card">
+                  <div class="gcc-header">
+                    <strong>Gate C (East)</strong>
+                    <span class="badge status-red" id="ctrl-gate-c-status">CRITICAL</span>
+                  </div>
+                  <div class="gcc-body">
+                    <label>Wait Time: <span id="val-gate-c-wait">25m</span></label>
+                    <input type="range" min="2" max="45" value="25" class="wait-slider" id="slider-gate-c" oninput="updateGateSimulation('c')">
+                  </div>
+                </div>
+
+                <!-- Gate D Controller -->
+                <div class="gate-control-card">
+                  <div class="gcc-header">
+                    <strong>Gate D (South)</strong>
+                    <span class="badge status-green" id="ctrl-gate-d-status">NORMAL</span>
+                  </div>
+                  <div class="gcc-body">
+                    <label>Wait Time: <span id="val-gate-d-wait">8m</span></label>
+                    <input type="range" min="2" max="45" value="8" class="wait-slider" id="slider-gate-d" oninput="updateGateSimulation('d')">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Operations Actions -->
+              <div class="ops-quick-actions">
+                <h4>Simulated Arena Quick Actions</h4>
+                <div class="actions-row">
+                  <button class="btn btn-secondary btn-sm" onclick="triggerAlertSimulation('concession')">🔥 Concession Rush Sec 300</button>
+                  <button class="btn btn-secondary btn-sm" onclick="triggerAlertSimulation('transit')">🚨 Train Delay (15 Mins)</button>
+                  <button class="btn btn-secondary btn-sm" onclick="triggerAlertSimulation('weather')">⚡ Lightning Warning (3mi)</button>
+                  <button class="btn btn-danger btn-sm" onclick="resetAllSimulations()">🔄 Reset Stadium Metrics</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: Incident Logger & Smart Report Summarizer -->
+          <div class="card glass-card logger-card">
+            <div class="card-header">
+              <div class="header-left">
+                <svg class="icon text-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <h3>Incident Log Terminal</h3>
+              </div>
+            </div>
+            
+            <div class="logger-body">
+              <form class="logger-form" onsubmit="submitIncident(event)">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="inc-type">Type</label>
+                    <select id="inc-type" required>
+                      <option value="Medical">Medical Emergency</option>
+                      <option value="Security">Security / Altercation</option>
+                      <option value="Facilities">Facilities / Infrastructure</option>
+                      <option value="Crowd">Crowd / Bottleneck</option>
+                      <option value="Other">Other Operational Issue</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="inc-loc">Location</label>
+                    <input type="text" id="inc-loc" placeholder="e.g. Sec 112 / Gate A" required>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="inc-severity">Severity</label>
+                    <select id="inc-severity" required>
+                      <option value="Low">Low - Informational</option>
+                      <option value="Medium" selected>Medium - Dispatch Sent</option>
+                      <option value="High">High - Supervisor Alert</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="inc-notes">Details / Observations</label>
+                  <textarea id="inc-notes" rows="2" placeholder="Brief notes of incident observations..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Log Incident & Alert Dispatch</button>
+              </form>
+
+              <!-- Incident List -->
+              <div class="incident-list-wrapper">
+                <h4>Active Stadium Incidents</h4>
+                <div class="incident-list" id="incident-log-items">
+                  <!-- Default logged item -->
+                  <div class="incident-item severity-medium" id="incident-1">
+                    <div class="ii-header">
+                      <span class="ii-type">🧑‍⚕️ Medical Emergency</span>
+                      <span class="ii-time">21:28</span>
+                    </div>
+                    <p class="ii-details">Section 104, Fan feeling faint. First aid squad dispatched.</p>
+                    <div class="ii-footer">
+                      <span class="ii-loc">📌 Section 104</span>
+                      <button class="ii-action-btn" onclick="generateIncidentReport('Medical', 'Section 104', 'Medium', 'Fan feeling faint. First aid squad dispatched.')">Draft Report</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- DIALOG: GEMINI API SETUP MODAL -->
+  <div class="modal-backdrop hidden" id="api-modal">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3>Google Gemini API Configuration</h3>
+        <button class="btn-close" onclick="toggleApiModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>By default, this application uses a rich local **Mock Gemini Intelligence Engine** that processes and responds to standard tournament queries offline.</p>
+        <p>To connect it to the **live Gemini API** for arbitrary natural language capabilities, insert your Google Gemini API Key below. (Your key is stored locally in your browser memory and only sent directly to Google's API servers).</p>
+        
+        <div class="form-group">
+          <label for="gemini-key">Gemini API Key</label>
+          <input type="password" id="gemini-key" placeholder="AIzaSy..." class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="gemini-model">Select Model</label>
+          <select id="gemini-model" class="form-input">
+            <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash (Fast, Recommended)</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro (Reasoning-focused)</option>
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash (High performance)</option>
+          </select>
+        </div>
+
+        <div class="api-notice">
+          <strong>How to obtain a key?</strong>
+          <p>Get a free developer API key from Google AI Studio at <a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="clearApiKey()">Disconnect API Key</button>
+        <button class="btn btn-primary" onclick="saveApiKey()">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIALOG: SMART INCIDENT EMAIL REPORT MODAL -->
+  <div class="modal-backdrop hidden" id="report-modal">
+    <div class="modal-card glass-card wide">
+      <div class="modal-header">
+        <h3>GenAI Incident Report Draft</h3>
+        <button class="btn-close" onclick="toggleReportModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-sm">The GenAI Engine has drafted a formal executive email alert summarizing the incident for stadium leadership.</p>
+        
+        <div class="form-group">
+          <label for="report-email-subject">Subject Line</label>
+          <input type="text" id="report-email-subject" class="form-input" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="report-email-body">Email Body</label>
+          <textarea id="report-email-body" rows="12" class="form-input code-font"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="toggleReportModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="copyReportEmail()">Copy Report Email</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
