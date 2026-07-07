@@ -1,10 +1,7 @@
 // Global State
 let ecoPoints = 0;
-let savedApiKey = '';
-let selectedModel = localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
-if (selectedModel === 'gemini-1.5-flash') {
-  selectedModel = 'gemini-2.5-flash';
-}
+let savedApiKey = localStorage.getItem('gemini_api_key') || '';
+let selectedModel = localStorage.getItem('gemini_model') || 'gemini-1.5-flash';
 let activeView = 'fan';
 let currentLanguage = 'en';
 
